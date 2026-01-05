@@ -1,11 +1,78 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>الخريطة</title>
+<meta charset="UTF-8">
+<title>خريطة SAW</title>
+<style>
+body {
+  margin:0;
+  background:#0b0f14;
+  color:#eee;
+  font-family: 'Segoe UI', Tahoma;
+  overflow:hidden;
+}
+#info {
+  position:fixed;
+  bottom:20px;
+  width:100%;
+  text-align:center;
+  color:#777;
+}
+canvas { display:block; }
+</style>
 </head>
-<body style="margin:0;display:grid;place-items:center;height:100vh;font-family:system-ui">
-  <h1>الخريطة ستُبنى هنا</h1>
+<body>
+
+<canvas id="map"></canvas>
+<div id="info">اضغط على أي نقطة للدخول إلى النص</div>
+
+<script>
+const canvas = document.getElementById("map");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let nodes = [];
+
+fetch("SAW-vault")
+  .then(()=>{}) // placeholder فقط
+
+const files = [
+  "Brain of the Device.md",
+  "الانطلاق لا يعني الشجاعة.md",
+  "سلوك الظلام والنور.md",
+  "سؤال وطني.md",
+  "وجهة نظر.md"
+];
+
+files.forEach((name,i)=>{
+  nodes.push({
+    name,
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: 6
+  });
+});
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  nodes.forEach(n=>{
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+    ctx.fillStyle="#6cf";
+    ctx.fill();
+  });
+}
+draw();
+
+canvas.onclick = e=>{
+  const x=e.offsetX,y=e.offsetY;
+  nodes.forEach(n=>{
+    if(Math.hypot(n.x-x,n.y-y)<n.r+3){
+      window.location.href = "SAW-vault/" + encodeURIComponent(n.name);
+    }
+  });
+}
+</script>
 </body>
 </html>
